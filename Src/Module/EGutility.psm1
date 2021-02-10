@@ -31,3 +31,39 @@ Function New-SQLConnectionString {
     Write-Log "Created Connection string '$ConnectionString'"
     $ConnectionString
 }
+
+Function ConvertTo-Int32 {
+
+[CmdletBinding()]
+Param(
+
+[Parameter(ValueFromPipeLine=$true)]
+[PSCustomObject]$InputObject
+
+)
+
+Process {
+
+$ConvertedProperties = @{}
+$Properties = ($_ | Get-Member -MemberType NoteProperty).Name
+Foreach ($Property in $Properties) {
+
+if ($_.$Property -as [int32]) {
+
+$ConvertedProperties.Add($Property,($_.$Property -as [int32]))
+
+} else {
+
+$ConvertedProperties.Add($Property,($_.$Property))
+
+}
+
+
+}
+
+[PsCustomObject]$ConvertedProperties
+
+}
+
+
+}

@@ -6,18 +6,17 @@ Function Write-Log {
     
     [Parameter(Mandatory = $True)]
     [string]$Message,
-    [string]$LogFilePath = "$env:TEMP"
+    [string]$LogFilePath = "$($env:TEMP)\log_$((New-Guid).Guid).txt"
     
     )
     
-    $LogFilePath = if ($Script:LogFilePath) {$Script:LogFilePath}
+    $LogFilePath = if ($Script:LogFilePath) {$Script:LogFilePath} else {$LogFilePath}
     
     $Log = "[$(Get-Date -Format G)][$((Get-PSCallStack)[1].Command)] $Message"
     
     Write-verbose $Log
     $Log | Out-File -FilePath $LogFilePath -Append -Force
     
-
 }
 Function New-SQLConnectionString {
     [CmdletBinding()]

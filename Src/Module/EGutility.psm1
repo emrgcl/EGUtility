@@ -66,3 +66,24 @@ $ConvertedProperties.Add($Property,($_.$Property))
 
 
 }
+
+Function Get-StringHash {
+
+    [CmdletBinding()]
+    Param(
+    
+        [Parameter(Mandatory =$true,ValueFromPipeLine = $true)]
+        [string]$String
+    
+    )
+
+Process {
+
+    $md5 = new-object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+    $utf8 = new-object -TypeName System.Text.UTF8Encoding
+    $hash = [System.BitConverter]::ToString($md5.ComputeHash($utf8.GetBytes($String)))
+    $hash -replace '-',''
+
+}
+
+}

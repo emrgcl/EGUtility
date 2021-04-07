@@ -87,3 +87,24 @@ Process {
 }
 
 }
+<#
+.SYNOPSIS
+    Gets time difference of given datetime from now.
+.DESCRIPTION
+    Gets time difference of given datetime from now.
+.EXAMPLE
+        Get-TimeSpan -Time $StartTime -Span TotalHours  
+        
+        1.56523913183333
+#>
+Function Get-TimeSpan {
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory = $true)]
+        [DateTime]$Time,
+        [ValidateSet('Days','Hours','MilliSeconds','Minutes','Seconds','TotalDays','TotalHours','TotalMilliSeconds','TotalMinutes','TotalSeconds')]
+        [string]$Span='TotalHours'
+    )
+    
+    ((Get-Date) - $Time).$Span
+}

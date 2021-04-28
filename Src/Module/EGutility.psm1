@@ -108,3 +108,35 @@ Function Get-TimeSpan {
     
     ((Get-Date) - $Time).$Span
 }
+<#
+.SYNOPSIS
+    Converts the datetime to cimdatetime to be used in WMI and CIM.
+.DESCRIPTION
+    Converts the datetime to cimdatetime to be used in WMI and CIM.
+    
+    HighLEvel Steps
+
+    1) Get String with UTC ofsset pattern. Ie: 20200408115224.000000+03:00 while doing so get the UTCSign and the UTCHour
+    2) Split the the hour and make calculatations to convert to 3 digit minutes
+    3) Replace the +3:00 with the calculated 180
+.EXAMPLE
+        Get-CIMDateTime
+        
+   
+Function Get-CIMDateTime {
+
+
+$CimDateString= get-date -Format "yyyyMMddHHmmss.000000K"
+if ($CimDateString -match '(?<UTCSign>\+|-)(?<UTC>.+)')
+
+{
+
+$UTCArray = $Matches['UTC'] -split ':'
+
+$UTCMinutes =  "{0:d3}" -f  ([int]$UTCArray[0] *60 + [int]$UTCArray[1])
+
+$CimDateString -replace '\+(.+)' ,"$($Matches['UTCSign'])$UTCMinutes"
+}
+
+}
+

@@ -6,18 +6,33 @@ Function Write-Log {
     
     [Parameter(Mandatory = $True)]
     [string]$Message,
-    [string]$LogFilePath = "$($env:TEMP)\log_$((New-Guid).Guid).txt"
-    
+    [string]$LogFilePath = "$($env:TEMP)\log_$((New-Guid).Guid).txt",
+    [Switch]$DoNotRotateDaily
     )
     
-    $LogFilePath = if ($Script:LogFilePath) {$Script:LogFilePath} else {$LogFilePath}
-    
+    if ($DoNotRotateDaily) {
+
+        
+        $LogFilePath = if ($Script:LogFilePath) {$Script:LogFilePath} else {$LogFilePath}
+            
+    } else {
+        if ($Script:LogFilePath) {
+
+        $LogFilePath = $Script:LogFilePath
+        $DayStamp = (Get-Date -Format 'yMMdd').Tostring()
+        $Extension = ($LogFilePath -split '\.')[-1]
+        $LogFilePath -match "(?<Main>.+)\.$extension`$" | Out-Null
+        $LogFilePath = "$($Matches.Main)_$DayStamp.$Extension"
+        
+    } else {$LogFilePath}
+    }
     $Log = "[$(Get-Date -Format G)][$((Get-PSCallStack)[1].Command)] $Message"
     
-    Write-verbose $Log
+    Write-Verbose $Log
     $Log | Out-File -FilePath $LogFilePath -Append -Force
     
 }
+
 Function New-SQLConnectionString {
     [CmdletBinding()]
     Param(

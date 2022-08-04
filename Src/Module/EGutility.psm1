@@ -1,3 +1,29 @@
+Function Get-DurationString {
+    Param(
+        [Parameter(Mandatory = $true)]
+        [DateTime]$Starttime,
+        [Parameter(Mandatory = $true)]
+        [string]$Section,
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('TotalHours','TotalDays','TotalMinutes','TotalSeconds','TotalMilliSeconds')]
+        [String]$TimeSelector,
+        [Switch]$IncludeTime
+    )
+        switch($TimeSelector)
+        {
+            'TotalHours' {$TimeSelected = 'Hours'}
+            'TotalDays' {$TimeSelected = 'Days'}
+            'TotalMinutes' {$TimeSelected = 'Minutes'}
+            'TotalSeconds' {$TimeSelected = 'Seconds'}
+            'TotalMilliSeconds' {$TimeSelected = 'MilliSeconds'}
+        }        
+    $Duration = [Math]::Round(((Get-Date) - $Starttime).$timeSelector)
+    if($IncludeTime.IsPresent) {
+    "[$(Get-Date -Format G)][$Section] Completed in  $Duration $TimeSelected."
+    } else {
+        "[$Section] Completed in $Duration $TimeSelected."
+    }
+}
 Function Write-Log {
 
     [CmdletBinding()]
